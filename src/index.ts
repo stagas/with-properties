@@ -1,6 +1,6 @@
-import { kebabToCamel } from 'kebab-to-camel'
 import { camelCaseToKebab } from 'camelcase-to-kebab'
 import { defineAccessors } from 'define-accessors'
+import { kebabToCamel } from 'kebab-to-camel'
 import type { Constructor, CustomElement } from './types'
 
 /**
@@ -77,6 +77,8 @@ export function withProperties<P extends Constructor<any>, M, C>(
       const data = new propsClass() as Record<string, unknown>
 
       defineAccessors(this, schema as Record<string, unknown>, key => ({
+        configurable: false,
+        enumerable: true,
         get() {
           return data[key]
         },
