@@ -1,3 +1,6 @@
 coverage
 dist
 node_modules
+package-lock.json
+.swc
+package-lock.json

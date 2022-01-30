@@ -1,4 +1,4 @@
-import { withProperties } from '../'
+import { withProperties } from '../src'
 
 const create = (Ctor: CustomElementConstructor) => {
   const randTag = 'x-' + ((Math.random() * 10e6) | 0).toString(36)
@@ -27,6 +27,22 @@ describe('withProps', () => {
     expect(el.bar).toBeUndefined()
     el.setAttribute('bar', 'some other value')
     expect(el.bar).toEqual('some other value')
+  })
+
+  it('keys are enumerable', () => {
+    class Foo extends withProperties(
+      HTMLElement,
+      class {
+        foo?: string
+        bar?: string
+      }
+    ) {}
+
+    create(Foo)
+
+    const el = new Foo()
+
+    expect(Object.keys(el)).toEqual(['foo', 'bar'])
   })
 
   it('converts kebab-case attribute names to propCase camelCased ones', () => {

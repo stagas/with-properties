@@ -32,7 +32,7 @@ $ npm i with-properties
 
 ### withProperties
 
-[src/index.ts:61-97](https://github.com/stagas/with-properties/blob/09b9dfbc39651dedc05a521ed6013a49d49411fd/src/index.ts#L61-L97 "Source code on GitHub")
+[src/index.ts:61-99](https://github.com/stagas/with-properties/blob/277e44260244869a3c7582b1a6b65521ab039b55/src/index.ts#L61-L99 "Source code on GitHub")
 
 Creates a base class extending another class and mixins a property
 accessors class that is added to the `observedAttributes` list with

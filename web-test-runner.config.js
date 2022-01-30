@@ -1,16 +1,25 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { esbuildPlugin } = require('@web/dev-server-esbuild')
+const { summaryReporter } = require('@web/test-runner')
+const { fromRollup } = require('@web/dev-server-rollup')
+const rollupCommonjs = require('@rollup/plugin-commonjs')
+
+const commonjs = fromRollup(rollupCommonjs);
 
 module.exports = {
+  concurrency: 1,
   nodeResolve: true,
-  files: ['src/**/*.spec.{ts,tsx}'],
+  files: ['test/**/*.spec.web.{ts,tsx}'],
   plugins: [
     esbuildPlugin({
       ts: true,
       tsx: true,
       jsxFactory: 'h',
-      jsxFragment: 'Fragment',
+      jsxFragment: 'Fragment'
     }),
+    commonjs(),
+  ],
+  reporters: [
+    summaryReporter(),
   ],
   coverageConfig: {
     include: ['src/**/*.{ts,tsx}'],
