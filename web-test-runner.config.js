@@ -14,7 +14,7 @@ module.exports = {
       ts: true,
       tsx: true,
       jsxFactory: 'h',
-      jsxFragment: 'Fragment'
+      jsxFragment: 'Fragment',
     }),
     commonjs(),
   ],
