@@ -3,7 +3,7 @@
   "author": "stagas",
   "short": "stagas/with-properties",
   "description": "custom elements base class factory with properties mapped to observed attributes",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "license": "MIT",
   "repository": {
     "type": "git",
