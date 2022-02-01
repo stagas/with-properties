@@ -1,6 +1,5 @@
 import { camelCaseToKebab } from 'camelcase-to-kebab'
 import { defineAccessors } from 'define-accessors'
-import { kebabToCamel } from 'kebab-to-camel'
 import type { Constructor, CustomElement } from './types'
 
 /**
@@ -64,7 +63,17 @@ export function withProperties<P extends Constructor<any>, M, C>(
 ): Constructor<InstanceType<P> & M & C & CustomElement> {
   const schema = propsClass.schema ?? new propsClass()
 
-  const observedAttributes = Object.keys(schema).map(camelCaseToKebab)
+  const map = new Map<string, string>(
+    Object.keys(schema)
+      .map(key => [
+        [key, key],
+        [key.toLowerCase(), key],
+        [camelCaseToKebab(key), key],
+      ])
+      .flat() as [string, string][]
+  )
+
+  const observedAttributes = [...map.keys()]
 
   const BaseCustomElement = class extends parent {
     static get observedAttributes() {
@@ -89,8 +98,7 @@ export function withProperties<P extends Constructor<any>, M, C>(
     }
 
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-      const prop = kebabToCamel(name)
-      if (prop in schema) this[prop] = newValue
+      if (map.has(name)) this[map.get(name)!] = newValue
       super.attributeChangedCallback?.(name, oldValue, newValue)
     }
   }

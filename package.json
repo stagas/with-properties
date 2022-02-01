@@ -95,7 +95,6 @@
   },
   "dependencies": {
     "camelcase-to-kebab": "^1.0.0",
-    "define-accessors": "^1.1.0",
-    "kebab-to-camel": "^1.0.0"
+    "define-accessors": "^1.1.0"
   }
 }
