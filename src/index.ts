@@ -9,7 +9,7 @@ import {
   CustomElementConstructor,
 } from './types'
 
-export type { PropsType }
+export type { Any, Types, ValueConstructor, PropsType, Constructor, CustomElementConstructor }
 
 export const getTypes = <T>(schema: T) =>
   new Map<string, ValueConstructor>(

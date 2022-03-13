@@ -11,8 +11,8 @@ describe('withProps', () => {
     class Foo extends withProperties(
       HTMLElement,
       class {
-        foo?: string
-        bar?: string
+        foo = String
+        bar = String
       }
     ) {}
 
@@ -29,12 +29,45 @@ describe('withProps', () => {
     expect(el.bar).toEqual('some other value')
   })
 
+  it('fires propertyChangedCallback', () => {
+    const propChangedResults: any[] = []
+
+    class Foo extends withProperties(
+      HTMLElement,
+      class {
+        fooFoo = String
+        barBar = String
+      }
+    ) {
+      propertyChangedCallback(name: string, oldValue: any, newValue: any) {
+        propChangedResults.push({ name, oldValue, newValue })
+      }
+    }
+
+    create(Foo)
+
+    const el = new Foo()
+
+    expect(el.fooFoo).toBeUndefined()
+    el.setAttribute('foo-foo', 'some value')
+    expect(el.fooFoo).toEqual('some value')
+    el.fooFoo = 'another'
+    expect(el.fooFoo).toEqual('another')
+    el.fooFoo = 'another'
+
+    expect(el.barBar).toBeUndefined()
+    el.setAttribute('barbar', 'some other value')
+    expect(el.barBar).toEqual('some other value')
+
+    expect(propChangedResults).toMatchSnapshot()
+  })
+
   it('keys are enumerable', () => {
     class Foo extends withProperties(
       HTMLElement,
       class {
-        foo?: string
-        bar?: string
+        foo = String
+        bar = String
       }
     ) {}
 
@@ -49,8 +82,8 @@ describe('withProps', () => {
     class Foo extends withProperties(
       HTMLElement,
       class {
-        fooFoo?: string
-        barBar?: string
+        fooFoo = String
+        barBar = String
       }
     ) {}
 
@@ -71,14 +104,14 @@ describe('withProps', () => {
     class Foo extends withProperties(
       HTMLElement,
       class {
-        foo?: string
+        foo = String
       }
     ) {}
 
     class Bar extends withProperties(
       Foo,
       class {
-        bar?: string
+        bar = String
       }
     ) {}
 
@@ -95,15 +128,17 @@ describe('withProps', () => {
     expect(el.bar).toEqual('some other value')
   })
 
-  it('uses `schema` static props class property when detected', () => {
+  it('casts values to primitive types', () => {
     class Foo extends withProperties(
       HTMLElement,
       class {
-        static schema = {
-          foo: '',
-          bar: '',
-        }
-        foo = 'some default'
+        string? = String
+        number? = Number
+        boolean = Boolean
+        implicitString = 'string'
+        implicitNumber = 123
+        implicitBoolean = true
+        somethingElse? = new Uint8Array(1)
       }
     ) {}
 
@@ -111,12 +146,72 @@ describe('withProps', () => {
 
     const el = new Foo()
 
-    expect(el.foo).toEqual('some default')
-    el.setAttribute('foo', 'some value')
-    expect(el.foo).toEqual('some value')
+    expect(el.string).toBeUndefined()
+    expect(el.number).toBeUndefined()
+    expect(el.boolean).toBeUndefined()
 
-    expect(el.bar).toBeUndefined()
-    el.setAttribute('bar', 'some other value')
-    expect(el.bar).toEqual('some other value')
+    el.string = 123 as any
+    expect(el.string).toBe('123')
+    el.setAttribute('string', '456')
+    expect(el.string).toBe('456')
+
+    el.number = '123' as any
+    expect(el.number).toBe(123)
+    el.setAttribute('number', '456')
+    expect(el.number).toBe(456)
+
+    el.boolean = '' as any
+    expect(el.boolean).toBe(true)
+    el.setAttribute('boolean', '')
+    expect(el.boolean).toBe(true)
+    el.toggleAttribute('boolean')
+    expect(el.boolean).toBe(false)
+
+    expect(el.implicitString).toBe('string')
+    expect(el.implicitNumber).toBe(123)
+    expect(el.implicitBoolean).toBe(true)
+
+    el.implicitString = 123 as any
+    expect(el.implicitString).toBe('123')
+
+    el.implicitNumber = '123' as any
+    expect(el.implicitNumber).toBe(123)
+    el.setAttribute('implicit-number', '456')
+    expect(el.implicitNumber).toBe(456)
+
+    el.implicitBoolean = '' as any
+    expect(el.implicitBoolean).toBe(true)
+    el.setAttribute('implicit-boolean', '')
+    expect(el.implicitBoolean).toBe(true)
+    el.toggleAttribute('implicit-boolean')
+    expect(el.implicitBoolean).toBe(false)
+
+    el.setAttribute('something-else', '123')
+    expect(el.somethingElse).toBeInstanceOf(Uint8Array)
   })
+
+  // it('uses `schema` static props class property when detected', () => {
+  //   class Foo extends withProperties(
+  //     HTMLElement,
+  //     class {
+  //       static schema = {
+  //         foo: '',
+  //         bar: '',
+  //       }
+  //       foo = 'some default'
+  //     }
+  //   ) {}
+
+  //   create(Foo)
+
+  //   const el = new Foo()
+
+  //   expect(el.foo).toEqual('some default')
+  //   el.setAttribute('foo', 'some value')
+  //   expect(el.foo).toEqual('some value')
+
+  //   expect(el.bar).toBeUndefined()
+  //   el.setAttribute('bar', 'some other value')
+  //   expect(el.bar).toEqual('some other value')
+  // })
 })
