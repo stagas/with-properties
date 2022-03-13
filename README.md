@@ -32,64 +32,29 @@ $ npm i with-properties
 
 ### withProperties
 
-[src/index.ts:60-107](https://github.com/stagas/with-properties/blob/ba2ee66814cca7f49517a514b99bef9e567b0977/src/index.ts#L60-L107 "Source code on GitHub")
+[src/index.ts:80-125](https://github.com/stagas/with-properties/blob/5a91d02224849e70d3b3850ad5370d0810e3884a/src/index.ts#L80-L125 "Source code on GitHub")
 
-Creates a base class extending another class and mixins a property
-accessors class that is added to the `observedAttributes` list with
-key names normalized so that the prop is **camelCased** and the attribute
-is **kebab-cased**. It does not try to normalize values, that is left
-as the responsibility of the props class, so everything passed here
-are the attribute values which can be either `string` or `null`.
-Inheritance works as expected, extended classes will contain all
-of the parent classes' mixined properties.
-
-If the props class includes a static property `schema`, then it will
-be used as the basis for the accessors, otherwise a new instance of
-the props class will be created when this function is called that
-will be used only for inspecting the keys and for intersecting
-the interfaces with the class object (so that TS/intellisense works
-properly).
-
-```ts
+```js
 class Foo extends withProperties(
   HTMLElement,
   class {
-    fooFoo?: string
-    barBar?: string
-  }
-) {}
-
-customElements.define('x-foo', Foo)
-
-const el = new Foo()
-
-expect(el.fooFoo).toBeUndefined()
-el.setAttribute('foo-foo', 'some value')
-expect(el.fooFoo).toEqual('some value')
-
-expect(el.barBar).toBeUndefined()
-el.setAttribute('bar-bar', 'some other value')
-expect(el.barBar).toEqual('some other value')
-
-// example with schema:
-class Foo extends withProperties(
-  HTMLElement,
-  class {
-    static schema = {
-      foo: '',
-      bar: '',
-    }
-    foo = 'some default'
+    string? = String
+    number? = Number
+    boolean = Boolean
+    implicitString = 'string'
+    implicitNumber = 123
+    implicitBoolean = true
+    somethingElse? = new Uint8Array(1)
   }
 ) {}
 ```
 
 #### Parameters
 
-*   `parent` **any** The parent constructor to extend (usually `HTMLElement`)
-*   `propsClass` **{: C, schema: M?}** A "props" class to create the properties from
+*   `parent` **C** The parent constructor to extend (usually `HTMLElement`)
+*   `propsClass` **[Constructor](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)\<P>** A "props" class to create the properties from
 
-Returns **[Constructor](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)\<any>** A base constructor to be extended from
+Returns **any** A base constructor to be extended from
 
 ## Contribute
 
