@@ -32,7 +32,7 @@ $ npm i with-properties
 
 ### withProperties
 
-[src/index.ts:80-125](https://github.com/stagas/with-properties/blob/5a91d02224849e70d3b3850ad5370d0810e3884a/src/index.ts#L80-L125 "Source code on GitHub")
+[src/index.ts:80-125](https://github.com/stagas/with-properties/blob/77027227713da339b2343a1aac885439f7051387/src/index.ts#L80-L125 "Source code on GitHub")
 
 ```js
 class Foo extends withProperties(
