@@ -1,20 +1,17 @@
-export interface Constructor<T> {
-  new (): T
+export type Constructor<T> = new (...args: any[]) => T
+
+/** @private */
+export type CustomElementConstructor = Constructor<CustomElement> & {
+  /**
+   * The attribute keys in this list are observed by the DOM
+   * and invoke {@link attributeChangedCallback} when they change.
+   * @private
+   */
+  observedAttributes?: string[]
 }
 
 /** @private */
-export interface CustomElement {
-  constructor: {
-    new (): CustomElement
-
-    /**
-     * The attribute keys in this list are observed by the DOM
-     * and invoke {@link attributeChangedCallback} when they change.
-     * @private
-     */
-    observedAttributes?: string[]
-  }
-
+export interface CustomElement extends HTMLElement {
   /**
    * Callback that is invoked when one of the {@link withProperties} changes.
    *
@@ -63,3 +60,18 @@ export interface CustomElement {
    */
   disconnectedCallback?(): void
 }
+
+export const Any = (x: any) => x
+
+export type ValueConstructor = typeof String | typeof Number | typeof Boolean | typeof Any
+
+export type PropsType<T> = {
+  [K in keyof T]: NonNullable<T[K]> extends ValueConstructor ? ReturnType<NonNullable<T[K]>> : T[K]
+}
+
+export const Types = new Map<ValueConstructor | 'Any', (x: any) => any>([
+  [String, x => x.toString()],
+  [Number, x => parseFloat(x)],
+  [Boolean, x => (x = x === false ? false : x != null)],
+  [Any, Any],
+])
