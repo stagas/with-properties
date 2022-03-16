@@ -40,6 +40,10 @@ export const applyProps = <T extends object>(
     }
   }
 
+  if (self.propertyChangedCallback) {
+    ;(data as any).propertyChangedCallback = self.propertyChangedCallback.bind(self)
+  }
+
   defineAccessors(self, schema, <K extends keyof T>(key: K) => ({
     configurable: false,
     enumerable: true,
